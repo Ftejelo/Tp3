@@ -80,6 +80,17 @@ class Grafo:
             return None
         return self.vertices[0]
 
+    def cambiar_peso(self,v,w,peso):
+        if v not in self.vertices or w not in self.vertices:
+            print("no estan")
+            return False
+        if v == w:
+            return False
+        if not self.estan_unidos(v,w):
+            return False
+
+        self.vertices[v][w] = peso
+
 
     def adyacentes(self,v):
         return list(self.vertices[v].keys())
@@ -89,13 +100,25 @@ class Grafo:
             return None
         return self.vertices[v][w]
 
+    def peso(self, v, w):
+        return self.peso_arista(v,w)
+
   
     def __str__(self):
-        cadena = ""
-        for v in self.obtener_vertices():
-            ady = ",".join(map(str, self.adyacentes(v)))
-            cadena += str(v) + ":" + ady + "\n"
-        return cadena
+
+        matriz_distancias = self.__matriz_de_distancias__(self.vertices)
+
+        return self.__stringMatrix__(matriz_distancias)
+        
+
+        # cadena = ""
+        # for v in self.obtener_vertices():
+        #     ady = ",".join(map(str, self.adyacentes(v)))
+        #     cadena += str(v) + ":" + ady + "\n"
+        # return cadena
+
+    def __repr__(self):
+        return self.__str__()
 
   	#Devuelve una lista de tuplas con el peso de la arista, el nodo origen, y el nodo destino
     def obtener_aristas(self):
@@ -105,3 +128,97 @@ class Grafo:
                 aristas.append((v,a,int(self.peso_arista(v,a))))
 
         return aristas
+
+
+
+    # Crea una matriz de distancias con la primera fila siendo un lista de de nodos
+    # de hasta donde se mide la distancia y las siguentes filas tienen primero el nodo
+    # donde se arranca y despues las distancias a los nodos correspondientes
+    def __matriz_de_distancias__(self, diccionario_distancias):
+
+        matriz_a_printear = []
+
+        lista_keys = list(diccionario_distancias.keys())
+        lista_keys.insert(0," ")
+
+        matriz_a_printear.append(lista_keys);
+
+        for desde in lista_keys[1:]:
+            lista_valores = [desde]
+
+            for hasta in lista_keys[1:]:
+                dic_origen = diccionario_distancias.get(desde)
+                distancia = dic_origen.get(hasta, float("inf"))
+
+                if (desde == hasta):
+                    distancia = 0
+
+                lista_valores.append(distancia)
+
+            matriz_a_printear.append(lista_valores)
+
+            
+                
+                
+
+
+        # for key, value in diccionario_distancias.items():
+        #     lista_valores = list(value[0].values())
+
+        #     lista_valores.insert(0, key)
+
+        #     matriz_a_printear.append(lista_valores)
+
+        return matriz_a_printear
+
+    # https://stackoverflow.com/questions/37093510/how-to-print-array-as-a-table-in-python
+    # Imprime una matriz generada por matriz_de_distancias
+
+    def __stringMatrix__(self, s):
+        string = ""
+        # Heading
+        string += "     "
+        for j in range(1, len(s[0])):
+            string += "%5s " % s[0][j]
+        string+= "\n"
+        string += "     "
+        for j in range(1, len(s[0])):
+            string += "------"
+        string += "\n"
+
+
+        # Matrix contents
+        for i in range(1, len(s)):
+            string += "%3s |" % s[i][0]
+            for j in range(1, len(s[0])):
+                cont = "∞" if (s[i][j] == float("inf")) else s[i][j]
+
+                string += "%5s " % cont
+            string+= "\n"
+
+        return string
+
+
+    # def __stringMatrix__(self, s):
+    #     string = ""
+    #     # Heading
+    #     print("     ", end="")
+    #     for j in range(1, len(s[0])):
+    #         print("%5s " % s[0][j], end="")
+    #     print()
+    #     print("     ", end="")
+    #     for j in range(1, len(s[0])):
+    #         print("------", end="")
+    #     print()
+
+
+    #     # Matrix contents
+    #     for i in range(1, len(s)):
+    #         print("%3s |" % s[i][0], end="")
+    #         for j in range(1, len(s[0])):
+    #             cont =  "∞" if (s[i][j] == float("inf")) else s[i][j]
+
+    #             print("%5s " % cont, end="")
+    #         print() 
+
+            
