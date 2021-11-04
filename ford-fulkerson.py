@@ -3,8 +3,6 @@ import queue
 from grafo import grafo
 
 
-
-
 def flujo(grafo, s, t):
   flujo = {}
   for v in grafo:
