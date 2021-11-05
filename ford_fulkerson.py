@@ -33,31 +33,30 @@ def min_peso(grafo, camino): #consigue el minimo peso de los aristas involucrado
 #HAY QUE ARREGAR
 def dfs(grafo, nodo_actual, objetivo, visitados = None):
     if visitados == None:
-        visitados = dict()
+        visitados = set()
 
 
     if nodo_actual in visitados:
-        return False
+        return []
 
     if nodo_actual == objetivo:
-        return True
+        visitados.add(nodo_actual)
+        return [nodo_actual]
 
 
     for vecino in grafo.adyacentes(nodo_actual):
-        visitados[vecino] = nodo_actual
+        visitados.add(nodo_actual)
         resultado = dfs(grafo, vecino, objetivo,  visitados)
 
         if resultado:
-
-            return True
+            resultado.append(nodo_actual)
+            return resultado
     
-    return False
+    return []
            
 #ARREGLAR JUNTO A DFS
-def obtener_camino(grafo, s, t): 
-    visitados = dict()
-
-    dfs(grafo, s, t, visitados)
+def obtener_camino(grafo, s, t):
+    camino = dfs(grafo, s, t)
     return camino[::-1]
     
 
