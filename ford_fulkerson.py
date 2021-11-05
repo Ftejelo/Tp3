@@ -30,37 +30,38 @@ def min_peso(grafo, camino): #consigue el minimo peso de los aristas involucrado
     return min_peso
 
 
-#HAY QUE ARREGAR
+#Recibe un grafo, el nombre del nodo inicial (nodo_actual), y el nodo objetivo (al que se quiere encontrar el camino). Devuelve una lista con los nodos
+#Con el objetivo en la posicion 0; y el nodo inicial en la posicion N
 def dfs(grafo, nodo_actual, objetivo, visitados = None):
-    if visitados == None:
+
+    if visitados == None: #Para que la primera llamada recursiva no tenga que enviar el set
         visitados = set()
 
-
-    if nodo_actual in visitados:
+    if nodo_actual in visitados:    #Devuelve nada (lista vacia) si se ya paso por ese nodo
         return []
 
-    if nodo_actual == objetivo:
+    if nodo_actual == objetivo:     #Llegó al objetivo, empieza a armar la lista.
         visitados.add(nodo_actual)
         return [nodo_actual]
 
+    
+    visitados.add(nodo_actual)  #Agrega el nodo actual al set de nodos visitados
 
-    for vecino in grafo.adyacentes(nodo_actual):
-        visitados.add(nodo_actual)
-        resultado = dfs(grafo, vecino, objetivo,  visitados)
+    for vecino in grafo.adyacentes(nodo_actual):    #Se busca sigue el DFS en cada uno de los vecinos del nodo actual
+        resultado = dfs(grafo, vecino, objetivo,  visitados)    
 
         if resultado:
             resultado.append(nodo_actual)
             return resultado
     
-    return []
+    return []       #En el caso de que no se haya logrado alcanzar el nodo objetivo, se devuelve una lista vacia
            
-#ARREGLAR JUNTO A DFS
+
+#Devuelve en un vector, un camino desde el nodo S, hasta el nodo T en el grafo. en la posicion [0] esta S, y el la posicion [n] esta T.
+#Si no encuentra ningun camino, devuelve un vector vacío
 def obtener_camino(grafo, s, t):
     camino = dfs(grafo, s, t)
     return camino[::-1]
-    
-
-    
     
 
 def flujo_ford_fulkerson(grafo, s, t):
@@ -76,11 +77,11 @@ def flujo_ford_fulkerson(grafo, s, t):
     camino = obtener_camino(grafo_residual,s,t) 
     print(camino)
     while camino:
-        capacidad_residual_camino = min_peso(grafo, camino) #peso minimo de camino
+        capacidad_residual_camino = min_peso(grafo_residual, camino) #peso minimo de camino
         capacidad_maxima += capacidad_residual_camino
     
         for i in range(1, len(camino)):
-            if camino[i] in grafo.adyacentes(camino[i-1]):
+            if camino[i] in grafo_residual.adyacentes(camino[i-1]):
                 #flujo[(camino[i-1], camino[i])] += capacidad_residual_camino
                 actualizar_grafo_residual(grafo_residual,camino[i-1],camino[i],capacidad_residual_camino)
         
