@@ -20,6 +20,20 @@ class Grafo:
         nuevoGrafo.vertices = copy.deepcopy(self.vertices)
         return nuevoGrafo
 
+    def copy_con_pesos(self, new_peso):
+        nuevoGrafo = Grafo(self.es_dirigido)
+        vertices_nuevos = copy.deepcopy(self.vertices)
+
+        #Itera todos los pesos de aristas, y los asigna como el nuevo peso
+        for vertice, vertices_adyacentes in vertices_nuevos.items():
+            for vertice_adyacente, peso in vertices_adyacentes.items():
+
+                vertices_nuevos[vertice][vertice_adyacente] = 0 if (peso == 0) else new_peso
+
+        nuevoGrafo.vertices = vertices_nuevos
+        return nuevoGrafo
+
+
     def estan_unidos(self,v,w):
         if v not in self.vertices or w not in self.vertices:
             return False
@@ -67,13 +81,24 @@ class Grafo:
             self.vertices[w][v] = peso
         return True
 
-    def borrar_arista(self,v,w,peso = 1):
+    def borrar_arista(self,v,w):
+        print(self)
+
         if not self.estan_unidos(v,w):
             return False
-        del self.vertices[v][w]
+
+        vertice_inicial = self.vertices[v]
+        vertice_final = self.vertices[w]
+
+        vertice_inicial.pop(w)
+
         if not self.es_dirigido:
-            del self.vertices[w][v]
+            vertice_final.pop(v)
+
+        print(self)
+        print()
         return True
+
 
 
         if len(self) == 0:
@@ -141,7 +166,7 @@ class Grafo:
         lista_keys = list(diccionario_distancias.keys())
         lista_keys.insert(0," ")
 
-        matriz_a_printear.append(lista_keys);
+        matriz_a_printear.append(lista_keys)
 
         for desde in lista_keys[1:]:
             lista_valores = [desde]

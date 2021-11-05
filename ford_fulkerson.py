@@ -65,10 +65,10 @@ def obtener_camino(grafo, s, t):
     
 
 def flujo_ford_fulkerson(grafo, s, t):
-    flujo = {}
-    for v in grafo:
-        for w in grafo.adyacentes(v):
-            flujo[(v,w)] = 0
+    # flujo = {}
+    # for v in grafo:
+    #     for w in grafo.adyacentes(v):
+    #         flujo[(v,w)] = 0
 
     capacidad_maxima = 0
     
@@ -82,19 +82,17 @@ def flujo_ford_fulkerson(grafo, s, t):
     
         for i in range(1, len(camino)):
             if camino[i] in grafo_residual.adyacentes(camino[i-1]):
-                #flujo[(camino[i-1], camino[i])] += capacidad_residual_camino
+                # flujo[(camino[i-1], camino[i])] += capacidad_residual_camino
                 actualizar_grafo_residual(grafo_residual,camino[i-1],camino[i],capacidad_residual_camino)
         
             else:
-                #flujo[(camino[i], camino[i-1])] -= capacidad_residual_camino
+                # flujo[(camino[i], camino[i-1])] -= capacidad_residual_camino
                 actualizar_grafo_residual(grafo_residual,camino[i],camino[i-1],capacidad_residual_camino)
 
         camino = obtener_camino(grafo_residual,s,t) 
         print(camino)
 
-    return capacidad_maxima, grafo_residual
-
-#faltan funciones obtener_camino
+    return capacidad_maxima, grafo_residual #, flujo
 
 #en este flujo, el flujo max es la cantidad de aristas que entran a la fuente o salen del sumidero
 #(suman lo mismo)

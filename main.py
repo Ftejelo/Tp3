@@ -44,11 +44,19 @@ def main():
 
     file.close()
 
-    # print(grafo)
+    grafo_peso_uno = grafo.copy_con_pesos(1)
+
 
     resultado = ff.flujo_ford_fulkerson(grafo, "s", "t")
 
+    resultado2= ff.flujo_ford_fulkerson(grafo_peso_uno, "s", "t")
+
     print("distancia:", resultado[0])
     print(resultado[1])
+
+    print()
+
+    print(resultado2[0])
+    print(resultado2[1])
 
 main()
