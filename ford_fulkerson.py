@@ -2,11 +2,14 @@ import queue
 
 from grafo import Grafo
 
-
+#A partir de un grafo, y un set de nodos de ese grafo; devuelve las aristas que conectan a un nodo del set, a un nodo que no se encuentra en el set
 def buscar_conexiones_externas_a_set(grafo, set):
     conexiones = []
 
     for nodo in set:
+        if nodo not in grafo:
+            raise IndexError("Nodo perteneciente al set no existe en el grafo al que el set referencia")
+
         for nodo_vecino in grafo.adyacentes(nodo):
             if nodo_vecino not in set:
                 conexiones.append([nodo, nodo_vecino])
@@ -18,22 +21,22 @@ def buscar_conexiones_externas_a_set(grafo, set):
 
 def actualizar_grafo_residual(grafo_residual, u, v, valor):
     peso_anterior = grafo_residual.peso(u,v)
+    peso_anterior_residual = grafo_residual.peso(v,u)
 
-    if peso_anterior <= valor:
+    if peso_anterior <= valor:      #si el nuevo peso es menor a 0
         grafo_residual.borrar_arista(u,v)
     else:
         grafo_residual.cambiar_peso(u,v,peso_anterior - valor)
     
-    if not grafo_residual.estan_unidos(v,u):
+    if not grafo_residual.estan_unidos(v,u):    
         grafo_residual.agregar_arista(v,u, valor)
     
     else:
-        peso_anterior_residual = grafo_residual.peso(v,u)
         grafo_residual.cambiar_peso(v, u, peso_anterior_residual + valor)
 
 
-
-def min_peso(grafo, camino): #consigue el minimo peso de los aristas involucrados en el camino (lista de v)
+#consigue el minimo peso de las aristas involucrados en el camino (lista de vertices)
+def min_peso(grafo, camino):
     min_peso = float('inf')
 
     for i in range(len(camino)-1):
@@ -47,7 +50,6 @@ def min_peso(grafo, camino): #consigue el minimo peso de los aristas involucrado
 #Recibe un grafo, el nombre del nodo inicial (nodo_actual), y el nodo objetivo (al que se quiere encontrar el camino). Devuelve una lista con los nodos
 #Con el objetivo en la posicion 0; y el nodo inicial en la posicion N
 def dfs(grafo, nodo_actual, objetivo, visitados = None):
-
     if visitados == None: #Para que la primera llamada recursiva no tenga que enviar el set
         visitados = set()
 
@@ -58,9 +60,7 @@ def dfs(grafo, nodo_actual, objetivo, visitados = None):
         visitados.add(nodo_actual)
         return [nodo_actual]
 
-    
     visitados.add(nodo_actual)  #Agrega el nodo actual al set de nodos visitados
-
     for vecino in grafo.adyacentes(nodo_actual):    #Se busca sigue el DFS en cada uno de los vecinos del nodo actual
         resultado = dfs(grafo, vecino, objetivo,  visitados)    
 
@@ -79,32 +79,24 @@ def obtener_camino(grafo, s, t):
     
 
 def flujo_ford_fulkerson(grafo, s, t):
-    # flujo = {}
-    # for v in grafo:
-    #     for w in grafo.adyacentes(v):
-    #         flujo[(v,w)] = 0
-
     capacidad_maxima = 0
-    
-  
     grafo_residual = grafo.copy()
+
+
     camino = obtener_camino(grafo_residual,s,t) 
     while camino:
-        capacidad_residual_camino = min_peso(grafo_residual, camino) #peso minimo de camino
+        capacidad_residual_camino = min_peso(grafo_residual, camino) #peso minimo de camino (cuello de botella)
         capacidad_maxima += capacidad_residual_camino
     
-        for i in range(1, len(camino)):
-            if camino[i] in grafo_residual.adyacentes(camino[i-1]):
-                # flujo[(camino[i-1], camino[i])] += capacidad_residual_camino
-                actualizar_grafo_residual(grafo_residual,camino[i-1],camino[i],capacidad_residual_camino)
-        
-            else:
-                # flujo[(camino[i], camino[i-1])] -= capacidad_residual_camino
-                actualizar_grafo_residual(grafo_residual,camino[i],camino[i-1],capacidad_residual_camino)
+        nodo_anterior = None
+
+        for nodo_actual in camino:
+            if (nodo_anterior != None): #Si nodo anterior es None, no se ejecuta la actualizacion del grafo, para poder tener una arista entre nodo actual y anterior.
+                actualizar_grafo_residual(grafo_residual, nodo_anterior, nodo_actual, capacidad_residual_camino)
+
+            nodo_anterior = nodo_actual
+
 
         camino = obtener_camino(grafo_residual,s,t)
 
-    return capacidad_maxima, grafo_residual #, flujo
-
-#en este flujo, el flujo max es la cantidad de aristas que entran a la fuente o salen del sumidero
-#(suman lo mismo)
+    return capacidad_maxima, grafo_residual

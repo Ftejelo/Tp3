@@ -1,25 +1,29 @@
 from grafo import Grafo
 import ford_fulkerson as ff
 import csv
+import sys
 
 def main():
 
 
-    # try:
-    #     ruta = sys.argv[1]
-    #     file = open(ruta)
-    # except IndexError:
-    #     print("No se ingresó ningun archivo.")
-    #     return
-    # except FileNotFoundError:
-    #     print("No se encontró ningun archivo con ese nombre.")
-    #     return
-    # except:
-    #     print("Hubo algun error")
+    try:
+        ruta = sys.argv[1]
+        file = open(ruta)
 
-    ruta = input("ruta: ")
+    except IndexError:
+        print("No se ingresó ningun archivo.")
+        return
 
-    file = open(ruta)  
+    except FileNotFoundError:
+        print("No se encontró ningun archivo con ese nombre.")
+        return
+        
+    except:
+        print("Hubo algun error")
+
+    # ruta = input("ruta: ")
+
+    # file = open(ruta)  
     
 
     grafo = Grafo(True)
@@ -28,10 +32,10 @@ def main():
     try:
         with file as archivo:
             csv_reader = csv.reader(archivo)
-            nodo_s = next(csv_reader)[0]
-            nodo_t = next(csv_reader)[0]
+            nodo_s = next(csv_reader)[0]    #Lectura nodo fuente
+            nodo_t = next(csv_reader)[0]    #lectura nodo sumidero
 
-            for line in csv_reader:
+            for line in csv_reader:         #lectura ciudades y aristas
                 ciudadInicio, ciudadFin, distancia = line
 
                 if ciudadInicio not in grafo:
@@ -49,7 +53,7 @@ def main():
 
     file.close()
 
-    grafo_peso_uno = grafo.copy_con_pesos(1)
+    grafo_peso_uno = grafo.copy_con_pesos(1)    #Crea un grafo con las mismas ciudades y con las aristas en las mismas direcciones, pero todas de peso 1.
 
 
     resultado = ff.flujo_ford_fulkerson(grafo, nodo_s, nodo_t)

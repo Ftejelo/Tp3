@@ -33,7 +33,7 @@ class Grafo:
         nuevoGrafo.vertices = vertices_nuevos
         return nuevoGrafo
 
-
+    #Devuelve True si ambos vertices existen, y hay una arista que conecta de V a W
     def estan_unidos(self,v,w):
         if v not in self.vertices or w not in self.vertices:
             return False
@@ -45,27 +45,14 @@ class Grafo:
     def obtener_vertices(self):
         return list(self.vertices.keys())
 
-
     def agregar_vertice(self,v):
         if v in self.vertices:
             return False
         self.vertices[v] = {}
         return True
-  
 
-
-    def borrar_vertice(self,v):
-        if v not in self.vertices:
-            return False
-    
-        for ver in self:
-            self.borrar_arista(v,ver)
-
-        del self.vertices[v]
-        return True
-    
-        #Si uno de los vertices no esta en el grafo, o ambos vertices son el mismo, no hace nada
-        #Si la arista existe, tampoco, solo agrega aristas inexistentes
+    #Si uno de los vertices no esta en el grafo, o ambos vertices son el mismo, no hace nada
+    #Si la arista existe, tampoco, solo agrega aristas inexistentes
     def agregar_arista(self,v,w,peso = 1):
         peso = int(peso)
 
@@ -81,6 +68,20 @@ class Grafo:
             self.vertices[w][v] = peso
         return True
 
+  
+
+    #Borra vertice, y respectivas aristas salientes y entrastes
+    def borrar_vertice(self,v):
+        if v not in self.vertices:
+            return False
+    
+        for ver in self:
+            self.borrar_arista(ver,v)
+
+        del self.vertices[v]
+        return True
+    
+    
     def borrar_arista(self,v,w):
         if not self.estan_unidos(v,w):
             return False
@@ -95,11 +96,6 @@ class Grafo:
 
         return True
 
-
-
-        if len(self) == 0:
-            return None
-        return self.vertices[0]
 
     def cambiar_peso(self,v,w,peso):
         if v not in self.vertices or w not in self.vertices:
@@ -147,17 +143,9 @@ class Grafo:
 
   
     def __str__(self):
-
         matriz_distancias = self.__matriz_de_distancias__(self.vertices)
-
         return self.__stringMatrix__(matriz_distancias)
-        
 
-        # cadena = ""
-        # for v in self.obtener_vertices():
-        #     ady = ",".join(map(str, self.adyacentes(v)))
-        #     cadena += str(v) + ":" + ady + "\n"
-        # return cadena
 
     def __repr__(self):
         return self.__str__()
@@ -194,28 +182,16 @@ class Grafo:
 
                 if (desde == hasta):
                     distancia = 0
-
                 lista_valores.append(distancia)
 
             matriz_a_printear.append(lista_valores)
 
-            
-                
-                
-
-
-        # for key, value in diccionario_distancias.items():
-        #     lista_valores = list(value[0].values())
-
-        #     lista_valores.insert(0, key)
-
-        #     matriz_a_printear.append(lista_valores)
 
         return matriz_a_printear
 
+    # Modificacion de:
     # https://stackoverflow.com/questions/37093510/how-to-print-array-as-a-table-in-python
-    # Imprime una matriz generada por matriz_de_distancias
-
+    # Devuelve un string listo para poder imprimir por terminal
     def __stringMatrix__(self, s):
         string = ""
         # Heading
@@ -239,29 +215,5 @@ class Grafo:
             string+= "\n"
 
         return string
-
-
-
-    # def __stringMatrix__(self, s):
-    #     string = ""
-    #     # Heading
-    #     print("     ", end="")
-    #     for j in range(1, len(s[0])):
-    #         print("%5s " % s[0][j], end="")
-    #     print()
-    #     print("     ", end="")
-    #     for j in range(1, len(s[0])):
-    #         print("------", end="")
-    #     print()
-
-
-    #     # Matrix contents
-    #     for i in range(1, len(s)):
-    #         print("%3s |" % s[i][0], end="")
-    #         for j in range(1, len(s[0])):
-    #             cont =  "∞" if (s[i][j] == float("inf")) else s[i][j]
-
-    #             print("%5s " % cont, end="")
-    #         print() 
 
             
