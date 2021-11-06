@@ -23,9 +23,14 @@ def main():
     
 
     grafo = Grafo(True)
+    nodo_s = None
+    nodo_t = None
     try:
         with file as archivo:
             csv_reader = csv.reader(archivo)
+            nodo_s = next(csv_reader)[0]
+            nodo_t = next(csv_reader)[0]
+
             for line in csv_reader:
                 ciudadInicio, ciudadFin, distancia = line
 
@@ -47,18 +52,32 @@ def main():
     grafo_peso_uno = grafo.copy_con_pesos(1)
 
 
-    resultado = ff.flujo_ford_fulkerson(grafo, "s", "t")
+    resultado = ff.flujo_ford_fulkerson(grafo, nodo_s, nodo_t)
 
-    resultado2= ff.flujo_ford_fulkerson(grafo_peso_uno, "s", "t")
+    resultado2= ff.flujo_ford_fulkerson(grafo_peso_uno, nodo_s, nodo_t)
 
-    print("distancia:", resultado[0])
-    print(resultado[1])
-
+    print("La mayor cantidad de pasajeros que pueden ir desde la ciudad", nodo_s, "hasta la ciudad", nodo_t, "son:", resultado[0])
     print()
 
-    print(resultado2[0])
-    print(resultado2[1])
+    set_conexo = resultado2[1].set_unilateralmente_conexo_desde(nodo_s)
+    conexiones_publicidades = ff.buscar_conexiones_externas_a_set(grafo_peso_uno, set_conexo)
 
-    print(resultado2[1].set_unilateralmente_conexo_desde("s"))
+    if (len(conexiones_publicidades) == 1):
+        print("La publicidad debería ser puesta en el viaje que va desde la ciudad", conexiones_publicidades[0][0], "hasta", conexiones_publicidades[0][1] + ".")
+
+    else:
+        print("Las publicidades deberían ser puestar en los viajes que van de las ciudades:")
+
+        primera_iteracion = True
+        for conexion in conexiones_publicidades:
+            if not primera_iteracion:
+                print(",")
+            print("desde", conexion[0], "hasta", conexion[1], end="")
+            primera_iteracion = False
+
+        print(".")
+
+
+
 
 main()

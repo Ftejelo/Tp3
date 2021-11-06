@@ -2,6 +2,20 @@ import queue
 
 from grafo import Grafo
 
+
+def buscar_conexiones_externas_a_set(grafo, set):
+    conexiones = []
+
+    for nodo in set:
+        for nodo_vecino in grafo.adyacentes(nodo):
+            if nodo_vecino not in set:
+                conexiones.append([nodo, nodo_vecino])
+
+    return conexiones
+
+
+
+
 def actualizar_grafo_residual(grafo_residual, u, v, valor):
     peso_anterior = grafo_residual.peso(u,v)
 
@@ -75,7 +89,6 @@ def flujo_ford_fulkerson(grafo, s, t):
   
     grafo_residual = grafo.copy()
     camino = obtener_camino(grafo_residual,s,t) 
-    print(camino)
     while camino:
         capacidad_residual_camino = min_peso(grafo_residual, camino) #peso minimo de camino
         capacidad_maxima += capacidad_residual_camino
@@ -89,8 +102,7 @@ def flujo_ford_fulkerson(grafo, s, t):
                 # flujo[(camino[i], camino[i-1])] -= capacidad_residual_camino
                 actualizar_grafo_residual(grafo_residual,camino[i],camino[i-1],capacidad_residual_camino)
 
-        camino = obtener_camino(grafo_residual,s,t) 
-        print(camino)
+        camino = obtener_camino(grafo_residual,s,t)
 
     return capacidad_maxima, grafo_residual #, flujo
 

@@ -82,8 +82,6 @@ class Grafo:
         return True
 
     def borrar_arista(self,v,w):
-        print(self)
-
         if not self.estan_unidos(v,w):
             return False
 
@@ -95,8 +93,6 @@ class Grafo:
         if not self.es_dirigido:
             vertice_final.pop(v)
 
-        print(self)
-        print()
         return True
 
 
