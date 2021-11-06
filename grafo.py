@@ -128,6 +128,27 @@ class Grafo:
     def peso(self, v, w):
         return self.peso_arista(v,w)
 
+    def set_unilateralmente_conexo_desde(self, v):
+
+        visitados = set()
+        
+        set_conexo = self.__set_unilateralmente_conexo_desde_recursivo__(v, visitados)
+
+        return set_conexo
+        
+    def __set_unilateralmente_conexo_desde_recursivo__(self, v, visitados):
+        set_conexo = {v}
+
+
+        for nodo_vecino in self.adyacentes(v):
+            if not nodo_vecino in visitados:
+                visitados.add(nodo_vecino)
+                set_ext = self.__set_unilateralmente_conexo_desde_recursivo__(nodo_vecino, visitados)
+                set_conexo.update(set_ext)
+
+        return set_conexo
+
+
   
     def __str__(self):
 
@@ -222,6 +243,7 @@ class Grafo:
             string+= "\n"
 
         return string
+
 
 
     # def __stringMatrix__(self, s):

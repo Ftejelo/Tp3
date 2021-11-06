@@ -59,4 +59,6 @@ def main():
     print(resultado2[0])
     print(resultado2[1])
 
+    print(resultado2[1].set_unilateralmente_conexo_desde("s"))
+
 main()
