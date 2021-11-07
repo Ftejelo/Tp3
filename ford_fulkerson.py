@@ -3,15 +3,17 @@ import queue
 from grafo import Grafo
 
 #A partir de un grafo, y un set de nodos de ese grafo; devuelve las aristas que conectan a un nodo del set, a un nodo que no se encuentra en el set
-def buscar_conexiones_externas_a_set(grafo, set):
+def calcular_aristas_corte_minimo(grafo, grafo_residual, s):
+    set_nodos_lado_fuente = grafo_residual.set_unilateralmente_conexo_desde(s) #Set que contiene a los nodos que se pueden acceder luego de augmentar el grafo 
+
     conexiones = []
 
-    for nodo in set:
+    for nodo in set_nodos_lado_fuente:
         if nodo not in grafo:
             raise IndexError("Nodo perteneciente al set no existe en el grafo al que el set referencia")
 
         for nodo_vecino in grafo.adyacentes(nodo):
-            if nodo_vecino not in set:
+            if nodo_vecino not in set_nodos_lado_fuente:
                 conexiones.append([nodo, nodo_vecino])
 
     return conexiones

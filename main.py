@@ -7,6 +7,7 @@ def main():
 
 
     try:
+        # ruta = "t"
         ruta = sys.argv[1]
         file = open(ruta)
 
@@ -56,15 +57,14 @@ def main():
     grafo_peso_uno = grafo.copy_con_pesos(1)    #Crea un grafo con las mismas ciudades y con las aristas en las mismas direcciones, pero todas de peso 1.
 
 
-    resultado = ff.flujo_ford_fulkerson(grafo, nodo_s, nodo_t)
+    capacidad_maxima_pasajeros , _ = ff.flujo_ford_fulkerson(grafo, nodo_s, nodo_t)
 
-    resultado2= ff.flujo_ford_fulkerson(grafo_peso_uno, nodo_s, nodo_t)
+    _,  grafo_residual_peso_1 = ff.flujo_ford_fulkerson(grafo_peso_uno, nodo_s, nodo_t)
 
-    print("La mayor cantidad de pasajeros que pueden ir desde la ciudad", nodo_s, "hasta la ciudad", nodo_t, "son:", resultado[0])
+    print("La mayor cantidad de pasajeros que pueden ir desde la ciudad", nodo_s, "hasta la ciudad", nodo_t, "son:", capacidad_maxima_pasajeros)
     print()
 
-    set_conexo = resultado2[1].set_unilateralmente_conexo_desde(nodo_s)
-    conexiones_publicidades = ff.buscar_conexiones_externas_a_set(grafo_peso_uno, set_conexo)
+    conexiones_publicidades = ff.calcular_aristas_corte_minimo(grafo, grafo_residual_peso_1, nodo_s)
 
     if (len(conexiones_publicidades) == 1):
         print("La publicidad debería ser puesta en el viaje que va desde la ciudad", conexiones_publicidades[0][0], "hasta", conexiones_publicidades[0][1] + ".")
