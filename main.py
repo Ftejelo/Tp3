@@ -70,16 +70,12 @@ def main():
         print("La publicidad debería ser puesta en el viaje que va desde la ciudad", conexiones_publicidades[0][0], "hasta", conexiones_publicidades[0][1] + ".")
 
     else:
-        print("Las publicidades deberían ser puestar en los viajes que van de las ciudades:")
+        print("Las publicidades deberían ser puestar en los viajes que van de las ciudades:",end="")
 
-        primera_iteracion = True
         for conexion in conexiones_publicidades:
-            if not primera_iteracion:
-                print(",")
-            print("desde", conexion[0], "hasta", conexion[1], end="")
-            primera_iteracion = False
+            print("\ndesde", conexion[0], "hasta", conexion[1], end=",")
 
-        print(".")
+        print("\b.")
 
 
 
